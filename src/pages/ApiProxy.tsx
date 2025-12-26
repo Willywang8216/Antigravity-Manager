@@ -617,7 +617,7 @@ print(response.text)`;
                                             value={appConfig.proxy.anthropic_mapping?.["claude-3.5-series"] || ""}
                                             onChange={(e) => handleMappingUpdate('anthropic', 'claude-3.5-series', e.target.value)}
                                         >
-                                            <option value="">claude-sonnet-4-5-thinking (Default)</option>
+                                            <option value="">claude-sonnet-4-5-thinking{t('proxy.router.default_suffix', ' (Default)')}</option>
                                             <optgroup label="Claude 4.5">
                                                 <option value="claude-opus-4-5-thinking">claude-opus-4-5-thinking</option>
                                                 <option value="claude-sonnet-4-5">claude-sonnet-4-5</option>
@@ -660,7 +660,7 @@ print(response.text)`;
                                                 <option value="gemini-3-flash">gemini-3-flash (快速)</option>
                                             </optgroup>
                                         </select>
-                                        <p className="mt-1 text-[9px] text-indigo-500">⚠️ 仅支持 Gemini 3 系列</p>
+                                        <p className="mt-1 text-[9px] text-indigo-500">{t('proxy.router.gemini3_only_warning')}</p>
                                     </div>
 
                                     {/* GPT-4o / 3.5 系列 */}
@@ -686,7 +686,7 @@ print(response.text)`;
                                                 <option value="gemini-3-pro-low">gemini-3-pro-low (均衡)</option>
                                             </optgroup>
                                         </select>
-                                        <p className="mt-1 text-[9px] text-emerald-600">⚠️ 仅支持 Gemini 3 系列</p>
+                                        <p className="mt-1 text-[9px] text-emerald-600">{t('proxy.router.gemini3_only_warning')}</p>
                                     </div>
 
                                     {/* GPT-5 系列 */}
@@ -712,7 +712,7 @@ print(response.text)`;
                                                 <option value="gemini-3-pro-low">gemini-3-pro-low (均衡)</option>
                                             </optgroup>
                                         </select>
-                                        <p className="mt-1 text-[9px] text-amber-600">⚠️ 仅支持 Gemini 3 系列</p>
+                                        <p className="mt-1 text-[9px] text-amber-600">{t('proxy.router.gemini3_only_warning')}</p>
                                     </div>
                                 </div>
                             </div>

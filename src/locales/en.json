@@ -356,6 +356,8 @@
             "add_mapping": "Add Mapping",
             "current_list": "Custom List",
             "no_custom_mapping": "No custom mappings yet",
+            "gemini3_only_warning": "⚠️ Gemini 3 series only",
+            "default_suffix": " (Default)",
             "original_id": "Original ID",
             "route_to": "Route To"
         },

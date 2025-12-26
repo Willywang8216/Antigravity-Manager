@@ -358,7 +358,9 @@
             "reset_mapping": "重置映射",
             "add_mapping": "添加映射 (Add Mapping)",
             "current_list": "当前映射列表 (Custom List)",
-            "no_custom_mapping": "暂无自定义精确映射"
+            "no_custom_mapping": "暂无自定义精确映射",
+            "gemini3_only_warning": "⚠️ 仅支持 Gemini 3 系列",
+            "default_suffix": "（默认）"
         },
         "examples": {
             "title": "使用示例"
