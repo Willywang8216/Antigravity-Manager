@@ -91,6 +91,17 @@ pub async fn delete_accounts(
     Ok(())
 }
 
+/// 重新排序账号列表
+/// 根据传入的账号ID数组顺序更新账号排列
+#[tauri::command]
+pub async fn reorder_accounts(account_ids: Vec<String>) -> Result<(), String> {
+    modules::logger::log_info(&format!("收到账号重排序请求，共 {} 个账号", account_ids.len()));
+    modules::account::reorder_accounts(&account_ids).map_err(|e| {
+        modules::logger::log_error(&format!("账号重排序失败: {}", e));
+        e
+    })
+}
+
 /// 切换账号
 #[tauri::command]
 pub async fn switch_account(app: tauri::AppHandle, account_id: String) -> Result<(), String> {

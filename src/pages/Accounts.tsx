@@ -33,6 +33,7 @@ function Accounts() {
         loading,
         refreshQuota,
         toggleProxyStatus,
+        reorderAccounts,
     } = useAccountStore();
     const { config } = useConfigStore();
 
@@ -658,6 +659,7 @@ function Accounts() {
                                 onExport={handleExportOne}
                                 onDelete={handleDelete}
                                 onToggleProxy={(id) => handleToggleProxy(id, !!accounts.find(a => a.id === id)?.proxy_disabled)}
+                                onReorder={reorderAccounts}
                             />
                         </div>
                     </div>

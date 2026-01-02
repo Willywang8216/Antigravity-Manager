@@ -84,6 +84,7 @@ pub fn run() {
             commands::add_account,
             commands::delete_account,
             commands::delete_accounts,
+            commands::reorder_accounts,
             commands::switch_account,
             commands::get_current_account,
             // 配额命令

@@ -144,6 +144,7 @@
             "last_used": "Last Used",
             "actions": "Actions"
         },
+        "drag_to_reorder": "Drag to reorder",
         "empty": {
             "title": "No Accounts",
             "desc": "Click the \"Add Account\" button above to add your first account"
