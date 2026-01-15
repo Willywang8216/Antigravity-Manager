@@ -15,6 +15,11 @@ edition = "2021"
 name = "antigravity_tools_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+# Headless proxy server binary (no GUI/Tauri runtime)
+[[bin]]
+name = "antigravity_proxy_server"
+path = "src/proxy_server_main.rs"
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
