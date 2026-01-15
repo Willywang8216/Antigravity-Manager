@@ -1069,6 +1069,72 @@ impl TokenManager {
         self.rate_limit_tracker.mark_success(account_id);
     }
     
+    /// 检查是否有可用的 Google 账号
+    /// 
+    /// 用于"仅兜底"模式的智能判断:当所有 Google 账号不可用时才使用外部提供商。
+    /// 
+    /// # 参数
+    /// - `quota_group`: 配额组("claude" 或 "gemini"),暂未使用但保留用于未来扩展
+    /// - `target_model`: 目标模型名称(已归一化),用于配额保护检查
+    /// 
+    /// # 返回值
+    /// - `true`: 至少有一个可用账号(未限流且未被配额保护)
+    /// - `false`: 所有账号都不可用(被限流或被配额保护)
+    /// 
+    /// # 示例
+    /// ```rust
+    /// // 检查是否有可用账号处理 claude-sonnet 请求
+    /// let has_available = token_manager.has_available_account("claude", "claude-sonnet-4-20250514").await;
+    /// if !has_available {
+    ///     // 切换到外部提供商
+    /// }
+    /// ```
+    pub async fn has_available_account(&self, _quota_group: &str, target_model: &str) -> bool {
+        // 检查配额保护是否启用
+        let quota_protection_enabled = crate::modules::config::load_app_config()
+            .map(|cfg| cfg.quota_protection.enabled)
+            .unwrap_or(false);
+        
+        // 遍历所有账号,检查是否有可用的
+        for entry in self.tokens.iter() {
+            let token = entry.value();
+            
+            // 1. 检查是否被限流
+            if self.is_rate_limited_by_account_id(&token.account_id) {
+                tracing::debug!(
+                    "[Fallback Check] Account {} is rate-limited, skipping",
+                    token.email
+                );
+                continue;
+            }
+            
+            // 2. 检查是否被配额保护(如果启用)
+            if quota_protection_enabled && token.protected_models.contains(target_model) {
+                tracing::debug!(
+                    "[Fallback Check] Account {} is quota-protected for model {}, skipping",
+                    token.email,
+                    target_model
+                );
+                continue;
+            }
+            
+            // 找到至少一个可用账号
+            tracing::debug!(
+                "[Fallback Check] Found available account: {} for model {}",
+                token.email,
+                target_model
+            );
+            return true;
+        }
+        
+        // 所有账号都不可用
+        tracing::info!(
+            "[Fallback Check] No available Google accounts for model {}, fallback should be triggered",
+            target_model
+        );
+        false
+    }
+    
     /// 从账号文件获取配额刷新时间
     /// 
     /// 返回该账号最近的配额刷新时间字符串（ISO 8601 格式）
