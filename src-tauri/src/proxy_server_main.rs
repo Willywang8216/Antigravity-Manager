@@ -1,8 +1,10 @@
 use std::sync::Arc;
 
-use antigravity_tools_lib::{
+use crate::{
     modules,
-    proxy::{AxumServer, ProxySecurityConfig, TokenManager, ZaiDispatchMode},
+    proxy::{
+        monitor::ProxyMonitor, AxumServer, ProxySecurityConfig, TokenManager, ZaiDispatchMode,
+    },
 };
 
 /// Headless entrypoint for running the Antigravity proxy server without Tauri/GUI.
@@ -31,7 +33,7 @@ async fn run_headless_proxy() -> Result<(), String> {
     let mut proxy_cfg = app_config.proxy.clone();
 
     // 2. Create monitor (no Tauri AppHandle in headless mode)
-    let monitor = Arc::new(antigravity_tools_lib::proxy::monitor::ProxyMonitor::new(1000, None));
+    let monitor = Arc::new(ProxyMonitor::new(1000, None));
     monitor.set_enabled(proxy_cfg.enable_logging);
 
     // 3. Initialize TokenManager using the same data dir as the GUI
@@ -47,7 +49,7 @@ async fn run_headless_proxy() -> Result<(), String> {
         .await;
 
     // 4. Load accounts from disk
-    let active_accounts = token_manager
+    let active_accounts: usize = token_manager
         .load_accounts()
         .await
         .map_err(|e| format!("load_accounts failed: {}", e))?;
@@ -64,7 +66,7 @@ async fn run_headless_proxy() -> Result<(), String> {
     }
 
     // 5. Start Axum server
-    let (server, handle) = AxumServer::start(
+    let (_server, handle): (AxumServer, tokio::task::JoinHandle<()>) = AxumServer::start(
         proxy_cfg.get_bind_address().to_string(),
         proxy_cfg.port,
         token_manager.clone(),
@@ -78,9 +80,6 @@ async fn run_headless_proxy() -> Result<(), String> {
     )
     .await
     .map_err(|e| format!("AxumServer::start failed: {}", e))?;
-
-    // Keep the server instance alive so shutdown channel is not dropped.
-    let _server = server;
 
     tracing::info!(
         "Headless Antigravity proxy server listening on http://{}:{}",
