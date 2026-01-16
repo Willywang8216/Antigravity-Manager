@@ -211,6 +211,7 @@ print(response.choices[0].message.content)
                 - **Data Deduplication**: Introduced `pendingLogsRef` and ID deduplication mechanisms to completely eliminate duplicate entries in the log list.
                 - **Precise Counting**: Implemented strict frontend-backend state synchronization; the system now fetches authoritative `totalCount` from the backend with every new log batch, ensuring accurate pagination and total counts.
                 - **Debounce Optimization**: Optimized log update debounce logic to reduce React re-renders and improve page smoothness.
+                - **Feature Renaming**: Renamed "Call Records" to "Traffic Logs" and reverted the route to `/monitor` for a more intuitive experience.
     *   **v3.3.34 (2026-01-16)**:
         - **OpenAI Codex/Responses Protocol Fix (Fix Issue #742)**:
             - **400 Invalid Argument Complete Fix**:

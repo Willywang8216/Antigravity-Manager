@@ -15,7 +15,7 @@ function Navbar() {
         { path: '/', label: t('nav.dashboard') },
         { path: '/accounts', label: t('nav.accounts') },
         { path: '/api-proxy', label: t('nav.proxy') },
-        { path: '/call-records', label: t('nav.call_records') },
+        { path: '/monitor', label: t('nav.call_records') },
         { path: '/settings', label: t('nav.settings') },
     ];
 

@@ -33,7 +33,7 @@ const router = createBrowserRouter([
         element: <ApiProxy />,
       },
       {
-        path: 'call-records',
+        path: 'monitor',
         element: <Monitor />,
       },
       {

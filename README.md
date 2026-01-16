@@ -229,6 +229,7 @@ print(response.choices[0].message.content)
                 - **数据去重**: 引入 `pendingLogsRef` 和 ID 排重机制，彻底杜绝日志列表中出现重复条目。
                 - **精准计数**: 实现了前后端状态的严格同步，每次接收新日志都从后端获取权威的 `totalCount`，确保页码和总数准确无误。
                 - **防抖优化**: 优化了日志更新的防抖逻辑，减少 React 重渲染次数，提升页面流畅度。
+                - **功能重命名**: 将“调用记录”重命名为“流量日志”，并恢复路由为 `/monitor`，使功能定位更加直观。
     *   **v3.3.34 (2026-01-16)**:
         - **OpenAI Codex/Responses 协议修复 (Fix Issue #742)**:
             - **400 Invalid Argument 彻底修复**:
