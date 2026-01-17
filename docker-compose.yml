@@ -1,0 +1,17 @@
+services:
+  antigravity-proxy:
+    build: .               # Build from this repo's Dockerfile (multi-stage)
+    image: antigravity-proxy
+    container_name: antigravity-proxy
+    ports:
+      - "8045:8045"
+    volumes:
+      - /home/will/.antigravity_tools:/home/antigravity/.antigravity_tools
+    restart: unless-stopped
+    networks:
+      1panel-network:
+        ipv4_address: 172.18.0.10
+
+networks:
+  1panel-network:
+    external: true
