@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{
+use antigravity_tools_lib::{
     modules,
     proxy::{
         monitor::ProxyMonitor, AxumServer, ProxySecurityConfig, TokenManager, ZaiDispatchMode,
@@ -49,7 +49,7 @@ async fn run_headless_proxy() -> Result<(), String> {
         .await;
 
     // 4. Load accounts from disk
-    let active_accounts: usize = token_manager
+    let active_accounts = token_manager
         .load_accounts()
         .await
         .map_err(|e| format!("load_accounts failed: {}", e))?;
@@ -66,7 +66,7 @@ async fn run_headless_proxy() -> Result<(), String> {
     }
 
     // 5. Start Axum server
-    let (_server, handle): (AxumServer, tokio::task::JoinHandle<()>) = AxumServer::start(
+    let (server, handle) = AxumServer::start(
         proxy_cfg.get_bind_address().to_string(),
         proxy_cfg.port,
         token_manager.clone(),
@@ -80,6 +80,9 @@ async fn run_headless_proxy() -> Result<(), String> {
     )
     .await
     .map_err(|e| format!("AxumServer::start failed: {}", e))?;
+
+    // Keep the server instance alive so shutdown channel is not dropped.
+    let _server = server;
 
     tracing::info!(
         "Headless Antigravity proxy server listening on http://{}:{}",
