@@ -700,6 +700,7 @@
             "status": "狀態",
             "method": "方法",
             "model": "模型",
+            "protocol": "協定",
             "account": "帳號",
             "path": "路徑",
             "usage": "Token 消耗",

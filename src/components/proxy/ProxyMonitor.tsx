@@ -60,7 +60,8 @@ const LogTable: React.FC<LogTableProps> = ({
                     <tr>
                         <th style={{ width: '60px' }}>{t('monitor.table.status')}</th>
                         <th style={{ width: '60px' }}>{t('monitor.table.method')}</th>
-                        <th style={{ width: '260px' }}>{t('monitor.table.model')}</th>
+                        <th style={{ width: '220px' }}>{t('monitor.table.model')}</th>
+                        <th style={{ width: '70px' }}>{t('monitor.table.protocol')}</th>
                         <th style={{ width: '140px' }}>{t('monitor.table.account')}</th>
                         <th style={{ width: '180px' }}>{t('monitor.table.path')}</th>
                         <th className="text-right" style={{ width: '90px' }}>{t('monitor.table.usage')}</th>
@@ -81,10 +82,23 @@ const LogTable: React.FC<LogTableProps> = ({
                                 </span>
                             </td>
                             <td className="font-bold" style={{ width: '60px' }}>{log.method}</td>
-                            <td className="text-blue-600 truncate" style={{ width: '260px', maxWidth: '260px' }}>
+                            <td className="text-blue-600 truncate" style={{ width: '220px', maxWidth: '220px' }}>
                                 {log.mapped_model && log.model !== log.mapped_model
                                     ? `${log.model} => ${log.mapped_model}`
                                     : (log.model || '-')}
+                            </td>
+                            <td style={{ width: '70px' }}>
+                                {log.protocol && (
+                                    <span className={`badge badge-xs text-white border-none ${
+                                        log.protocol === 'openai' ? 'bg-green-500' :
+                                        log.protocol === 'anthropic' ? 'bg-orange-500' :
+                                        log.protocol === 'gemini' ? 'bg-blue-500' : 'bg-gray-400'
+                                    }`}>
+                                        {log.protocol === 'openai' ? 'OpenAI' :
+                                         log.protocol === 'anthropic' ? 'Claude' :
+                                         log.protocol === 'gemini' ? 'Gemini' : log.protocol}
+                                    </span>
+                                )}
                             </td>
                             <td className="text-gray-600 dark:text-gray-400 truncate text-[10px]" style={{ width: '140px', maxWidth: '140px' }}>
                                 {log.account_email ? log.account_email.replace(/(.{3}).*(@.*)/, '$1***$2') : '-'}

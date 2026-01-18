@@ -704,6 +704,7 @@
             "status": "Status",
             "method": "Method",
             "model": "Model",
+            "protocol": "Protocol",
             "account": "Account",
             "path": "Path",
             "usage": "Tokens",

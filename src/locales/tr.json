@@ -666,6 +666,7 @@
             "status": "Durum",
             "method": "Metot",
             "model": "Model",
+            "protocol": "Protokol",
             "account": "Hesap",
             "path": "Yol",
             "usage": "Token'lar",

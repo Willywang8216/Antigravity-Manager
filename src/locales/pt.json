@@ -700,6 +700,7 @@
             "status": "Status",
             "method": "Método",
             "model": "Modelo",
+            "protocol": "Protocolo",
             "account": "Conta",
             "path": "Caminho",
             "usage": "Tokens",

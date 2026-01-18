@@ -655,6 +655,7 @@
             "status": "ステータス",
             "method": "メソッド",
             "model": "モデル",
+            "protocol": "プロトコル",
             "account": "アカウント",
             "path": "パス",
             "usage": "トークン",

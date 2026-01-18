@@ -697,6 +697,7 @@
             "status": "Trạng thái",
             "method": "Method",
             "model": "Model",
+            "protocol": "Giao thức",
             "account": "Tài khoản",
             "path": "Đường dẫn (Path)",
             "usage": "Tokens",
