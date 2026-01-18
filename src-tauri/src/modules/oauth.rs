@@ -74,7 +74,7 @@ pub fn get_auth_url(redirect_uri: &str) -> String {
 
 /// 使用 Authorization Code 交换 Token
 pub async fn exchange_code(code: &str, redirect_uri: &str) -> Result<TokenResponse, String> {
-    let client = crate::utils::http::create_client(15);
+    let client = crate::utils::http::get_client();
     
     let params = [
         ("client_id", CLIENT_ID),
@@ -122,7 +122,7 @@ pub async fn exchange_code(code: &str, redirect_uri: &str) -> Result<TokenRespon
 
 /// 使用 refresh_token 刷新 access_token
 pub async fn refresh_access_token(refresh_token: &str) -> Result<TokenResponse, String> {
-    let client = crate::utils::http::create_client(15);
+    let client = crate::utils::http::get_client();
     
     let params = [
         ("client_id", CLIENT_ID),
@@ -156,7 +156,7 @@ pub async fn refresh_access_token(refresh_token: &str) -> Result<TokenResponse, 
 
 /// 获取用户信息
 pub async fn get_user_info(access_token: &str) -> Result<UserInfo, String> {
-    let client = crate::utils::http::create_client(15);
+    let client = crate::utils::http::get_client();
     
     let response = client
         .get(USERINFO_URL)

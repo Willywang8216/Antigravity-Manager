@@ -10,10 +10,10 @@ pub mod thinking_utils;
 pub mod collector;
 
 pub use models::*;
-pub use request::{transform_claude_request_in, clean_cache_control_from_messages};
+pub use request::{transform_claude_request_in, clean_cache_control_from_messages, merge_consecutive_messages};
 pub use response::transform_response;
 pub use streaming::{PartProcessor, StreamingState};
-pub use thinking_utils::close_tool_loop_for_thinking;
+pub use thinking_utils::{close_tool_loop_for_thinking, filter_invalid_thinking_blocks_with_family};
 pub use collector::collect_stream_to_json;
 
 use bytes::Bytes;
@@ -165,7 +165,7 @@ fn process_sse_line(line: &str, state: &mut StreamingState, trace_id: &str, emai
     // [DISABLED] Temporarily disabled to fix Cherry Studio compatibility
     // Cherry Studio doesn't recognize "web_search_tool_result" type, causing validation errors
     // Search results are still displayed via Markdown text block in streaming.rs (lines 341-381)
-    // TODO: Research Antigravity2Api implementation for correct type mapping
+
     /*
     if let Some(grounding) = raw_json
         .get("candidates")

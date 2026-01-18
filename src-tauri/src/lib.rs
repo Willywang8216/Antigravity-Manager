@@ -7,7 +7,33 @@ pub mod error;
 
 use tauri::Manager;
 use modules::logger;
-use tracing::{info, error};
+use tracing::{info, warn, error};
+
+/// 针对 macOS 提升文件描述符限制，防止 "Too many open files" 错误
+#[cfg(target_os = "macos")]
+fn increase_nofile_limit() {
+    unsafe {
+        let mut rl = libc::rlimit {
+            rlim_cur: 0,
+            rlim_max: 0,
+        };
+        
+        if libc::getrlimit(libc::RLIMIT_NOFILE, &mut rl) == 0 {
+            info!("当前文件描述符限制: soft={}, hard={}", rl.rlim_cur, rl.rlim_max);
+            
+            // 尝试提升到 4096 或最大硬上限
+            let target = 4096.min(rl.rlim_max);
+            if rl.rlim_cur < target {
+                rl.rlim_cur = target;
+                if libc::setrlimit(libc::RLIMIT_NOFILE, &rl) == 0 {
+                    info!("已成功将文件描述符限制提升至 {}", target);
+                } else {
+                    warn!("提升文件描述符限制失败");
+                }
+            }
+        }
+    }
+}
 
 // 测试命令
 #[tauri::command]
@@ -17,6 +43,10 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // 增加文件描述符限制 (仅 macOS)
+    #[cfg(target_os = "macos")]
+    increase_nofile_limit();
+
     // 初始化日志
     logger::init_logger();
     

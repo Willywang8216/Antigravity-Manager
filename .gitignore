@@ -43,5 +43,5 @@ __pycache__/
 *.pyc
 
 # Reference projects (for development only)
-
+CLIProxyAPI/
 DOCKER_DEPLOYMENT.md

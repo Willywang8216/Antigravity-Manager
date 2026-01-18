@@ -20,7 +20,7 @@ pub mod monitor;           // 监控
 pub mod rate_limit;        // 限流跟踪
 pub mod sticky_config;     // 粘性调度配置
 pub mod session_manager;   // 会话指纹管理
-pub mod audio;             // 音频处理模块 (PR #311)
+pub mod audio;             // 音频处理模块
 pub mod signature_cache;   // Signature Cache (v3.3.16)
 pub mod cli_sync;          // CLI 配置同步 (v3.3.35)
 

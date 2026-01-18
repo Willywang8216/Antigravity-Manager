@@ -73,7 +73,7 @@ dependencies = [
 
 [[package]]
 name = "antigravity_tools"
-version = "3.3.38"
+version = "3.3.42"
 dependencies = [
  "anyhow",
  "async-stream",
@@ -89,6 +89,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "image",
+ "libc",
  "once_cell",
  "pin-project",
  "rand 0.8.5",

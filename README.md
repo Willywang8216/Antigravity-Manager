@@ -1,5 +1,5 @@
 # Antigravity Tools 🚀
-> 专业的 AI 账号管理与协议反代系统 (v3.3.38)
+> 专业的 AI 账号管理与协议反代系统 (v3.3.42)
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
 
@@ -8,7 +8,7 @@
   
   <p>
     <a href="https://github.com/lbjlaq/Antigravity-Manager">
-      <img src="https://img.shields.io/badge/Version-3.3.38-blue?style=flat-square" alt="Version">
+      <img src="https://img.shields.io/badge/Version-3.3.42-blue?style=flat-square" alt="Version">
     </a>
     <img src="https://img.shields.io/badge/Tauri-v2-orange?style=flat-square" alt="Tauri">
     <img src="https://img.shields.io/badge/Backend-Rust-red?style=flat-square" alt="Rust">
@@ -205,6 +205,47 @@ print(response.choices[0].message.content)
 ## 📝 开发者与社区
 
 *   **版本演进 (Changelog)**:
+    *   **v3.3.42 (2026-01-18)**:
+        - **[流量日志增强] 协议自动识别与流式响应整合 (PR #814)**:
+            - **协议标签分类**: 流量日志列表现在可以根据 URI 自动识别并标注协议类型（OpenAI 绿色、Anthropic 橙色、Gemini 蓝色），使请求来源一目了然。
+            - **流式数据全整合**: 彻底解决了流式响应在日志中仅显示 `[Stream Data]` 的问题。现在会自动拦截并聚合流式数据包，将分散的 `delta` 片段还原为完整的回复内容和“思考”过程，大幅提升调试效率。
+            - **多语言适配**: 补全了流量日志相关功能在 8 种语言环境下的 i18n 翻译。
+        - **[重大修复] Gemini JSON Schema 清洗策略深度重构 (Issue #815)**:
+            - **解决属性丢失问题**: 实现了“最佳分支合并”逻辑。在处理工具定义的 `anyOf`/`oneOf` 结构时，会自动识别并提取内容最丰富的分支属性向上合并，彻底解决了模型报错 `malformed function call` 的顽疾。
+            - **稳健的白名单机制**: 采用针对 Gemini API 的严格白名单过滤策略，剔除不支持的校验字段，确保 API 调用 100% 兼容（从根本上杜绝 400 错误）。
+            - **约束信息迁移 (Description Hints)**: 在移除 `minLength`, `pattern`, `format` 等字段前，自动将其转为文字描述追加到 `description` 中，确保模型依然能感知参数约束。
+            - **Schema 上下文检测锁**: 新增安全检查逻辑，确保清洗器仅在处理真正的 Schema 时执行。通过“精准锁”保护了 `request.rs` 中的工具调用结构，确保历史修复逻辑（如布尔值转换、Shell 数组转换）在重构后依然稳如磐石。
+    *   **v3.3.41 (2026-01-18)**:
+        - **Claude 协议核心兼容性修复 (Issue #813)**:
+            - **连续 User 消息合并**: 实现了 `merge_consecutive_messages` 逻辑，在请求进入 Proxy 时自动合并具有相同角色的连续消息流。彻底解决了因 Spec/Plan 模式切换导致的角色交替违规产生的 400 Bad Request 错误。
+            - **EnterPlanMode 协议对齐**: 针对 Claude Code 的 `EnterPlanMode` 工具调用，强制清空冗余参数，确保完全符合官方协议，解决了激活 Plan Mode 时的指令集校验失败问题。
+        - **代理鲁棒性增强**:
+            - 增强了工具调用链的自愈能力。当模型因幻觉产生错误路径尝试时，Proxy 现能提供标准的错误反馈引导模型转向正确路径。
+    *   **v3.3.40 (2026-01-18)**:
+        - **API 400 错误深度修复 (Grep/Thinking 稳定性改进)**:
+            - **修复流式块顺序违规**: 彻底解决了 "Found 'text' instead of 'thinking'" 400 错误。修正了 `streaming.rs` 中在文字块后非法追加思维块的逻辑，改由缓存机制实现静默同步。
+            - **思维签名自愈增强**: 在 `claude.rs` 中扩展了 400 错误捕获关键词，覆盖了签名失效、顺序违规和协议不匹配场景。一旦触发，代理会自动执行消息降级并快速重试，实现用户无感知的异常自愈。
+            - **搜索工具参数深度对齐**: 修正了 `Grep` 和 `Glob` 工具的参数映射逻辑，将 `query` 准确映射为 `path` (Claude Code Schema)，并支持默认注入执行路径 `.`。
+            - **工具名重映射策略优化**: 改进了重命名逻辑，仅针对 `search` 等模型幻觉进行修正，避免破坏原始工具调用签名。
+            - **签名缺失自动补完**: 针对 LS、Bash、TodoWrite 等工具调用缺失 `thought_signature` 的情况，自动注入通用校验占位符，确保协议链路畅通。
+        - **架构健壮性优化**:
+            - 增强了全局递归清理函数 `clean_cache_control_from_messages`，确保 `cache_control` 不会干扰 Vertex AI/Anthropic 严格模式。
+            - 完善了错误日志系统，建立了详细的场景对照表并记录于 [docs/client_test_examples.md](docs/client_test_examples.md)。
+    *   **v3.3.39 (2026-01-17)**:
+        - **代理深度优化 (Gemini 稳定性增强)**：
+            - **Schema 净化器升级**：支持 `allOf` 合并、智能联合类型选择、Nullable 自动过滤及空对象参数补全，彻底解决复杂工具定义导致的 400 错误。
+            - **搜索工具自愈**：实现 `Search` 到 `grep` 的自动重映射，并引入 **Glob-to-Include 迁移**（自动将 `**/*.rs` 等 Glob 模式移至包含参数），解决 Claude Code `Error searching files` 报错。
+            - **参数别名补全**：统一 `search_code_definitions` 等相关工具的参数映射逻辑，并强制执行布尔值类型转换。
+            - **Shell 调用加固**：强制 `local_shell_call` 的 `command` 参数返回数组，增强与 Google API 的兼容性。
+            - **动态 Token 约束**：自动根据 `thinking_budget` 调整 `maxOutputTokens`，确保满足 API 强约束；精简停止序列 (Stop Sequences) 以提升流式输出质量。
+        - **Thinking 模式稳定性大幅提升**：
+            - 引入跨模型家族签名校验，自动识别并降级不兼容的思维链签名，防止 400 Bad Request 错误。
+            - 增强“会话自愈 (Session Healing)”逻辑，支持自动补全被中断的工具循环，确保满足 Google/Vertex AI 的严苛结构要求。
+        - **高可用性增强**：
+            - 优化自动端点降级 (Endpoint Fallback) 逻辑，在 429 或 5xx 错误时更平滑地切换至备用 API 端点。
+        - **修复 macOS "Too many open files" 错误 (Issue #784)**：
+            - 引入全局共享 HTTP 客户端连接池，大幅减少 Socket 句柄占用。
+            - 针对 macOS 系统自动提升文件描述符限制 (RLIMIT_NOFILE) 至 4096，增强高并发稳定性。
     *   **v3.3.38 (2026-01-17)**:
         - **CLI 同步增强与探测修复 (Fix CLI-Sync Detection)**:
             - **探测路径扩展**: 优化了二进制检测逻辑。新增对 `~/.local/bin` (curl 安装常用路径)、`~/.npm-global/bin` 以及 `~/bin` 的扫描。
